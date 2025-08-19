@@ -73,7 +73,7 @@ const About = () => {
             {/* Key Highlights */}
             <div className="grid md:grid-cols-3 gap-6">
               <div className="project-card text-center">
-                <div className="text-3xl font-bold text-primary mb-2">5+</div>
+                <div className="text-3xl font-bold text-primary mb-2">10+</div>
                 <p className="text-muted-foreground">Projects Completed</p>
               </div>
               <div className="project-card text-center">
