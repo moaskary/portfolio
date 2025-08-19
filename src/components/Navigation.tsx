@@ -2,7 +2,11 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
+console.log("Navigation component loading...");
+
 const Navigation = () => {
+  console.log("Navigation component rendering...");
+  
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 

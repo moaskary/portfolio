@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import { Github, Mail, Linkedin, Dumbbell, Book, Zap } from "lucide-react";
 
+console.log("Home component loading...");
+
 const Home = () => {
+  console.log("Home component rendering...");
+  
   return (
     <main className="min-h-screen relative overflow-hidden">
       {/* Data Stream Background */}
