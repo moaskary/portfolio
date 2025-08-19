@@ -103,7 +103,7 @@
 
   /* Project card styling */
   .project-card {
-    @apply relative p-6 bg-card border border-border rounded-xl transition-all duration-300 hover:border-primary/50 hover:shadow-[var(--glow-accent)] group overflow-hidden;
+    @apply relative p-6 bg-card border border-border rounded-xl transition-all duration-300 hover:border-primary/50 hover:shadow-[var(--glow-accent)] overflow-hidden;
   }
 
   .project-card::before {
