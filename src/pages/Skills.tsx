@@ -8,7 +8,7 @@ const Skills = () => {
       skills: [
         { name: "Python", icon: "🐍", level: 95 },
         { name: "SQL", icon: "📊", level: 90 },
-        { name: "JavaScript", icon: "⚡", level: 80 },
+        { name: "Java", icon: "⚡", level: 80 },
         { name: "Bash/Shell", icon: "🖥️", level: 85 }
       ]
     },
