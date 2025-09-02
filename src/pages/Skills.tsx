@@ -70,7 +70,45 @@ const Skills = () => {
             <div className="w-24 h-1 bg-primary mx-auto mt-6"></div>
           </div>
 
-          
+          {/* Main Skills Grid */}
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            {skillCategories.map((category, index) => (
+              <div key={index} className="project-card">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                    {category.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold text-foreground">
+                    {category.title}
+                  </h3>
+                </div>
+
+                <div className="space-y-4">
+                  {category.skills.map((skill, skillIndex) => (
+                    <div key={skillIndex} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">{skill.icon}</span>
+                          <span className="font-medium text-foreground">
+                            {skill.name}
+                          </span>
+                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          {skill.level}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-secondary rounded-full h-2">
+                        <div
+                          className="bg-primary h-2 rounded-full transition-all duration-1000 ease-out"
+                          style={{ width: `${skill.level}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
 
           {/* Tools & Technologies */}
           <div className="project-card">
