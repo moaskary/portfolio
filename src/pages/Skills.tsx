@@ -29,7 +29,7 @@ const Skills = () => {
         { name: "AWS", icon: "☁️", level: 85 },
         { name: "Docker", icon: "🐳", level: 90 },
         { name: "GitHub Actions", icon: "⚙️", level: 80 },
-        { name: "Kubernetes", icon: "⚓", level: 75 }
+        { name: "Kubernetes", icon: "⚓",  }
       ]
     },
     {
