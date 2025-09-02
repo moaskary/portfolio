@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 // --- Main Component ---
 const SkillsPage = () => {
-  // Add a 'category' to each skill for filtering
+  // Your skills data remains the same...
   const allSkills = [
     { name: "Python", category: "Programming", icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40" className="text-blue-400"><path d="M12.001 2.003c-2.793 0-5.127 1.68-6.166 4.06-3.13.435-5.334 1.91-5.334 3.943 0 2.25 2.418 4.06 5.39 4.06.418 0 .82-.05 1.205-.135.84 2.85 3.42 4.95 6.405 4.95 2.793 0 5.127-1.68 6.166-4.06 3.13-.435 5.334-1.91 5.334-3.943 0-2.25-2.418-4.06-5.39-4.06-.418 0-.82.05-1.205.135-.84-2.85-3.42-4.95-6.405-4.95zm-6.108 8.01c-1.928 0-3.483-1.008-3.483-2.25s1.555-2.25 3.483-2.25S9.376 6.77 9.376 8.013c0 1.24-1.554 2.25-3.483 2.25zm12.216 0c-1.928 0-3.483-1.008-3.483-2.25s1.555-2.25 3.483-2.25c1.93 0 3.484 1.008 3.484 2.25s-1.554 2.25-3.484 2.25z"/></svg> },
     { name: "SQL", category: "Data", icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40" className="text-cyan-500"><path d="M4.222 3.81a.75.75 0 0 1 1.06 0l2.47 2.47H16.5a3.75 3.75 0 0 1 3.75 3.75v.436a.75.75 0 0 1-1.5 0V10.03a2.25 2.25 0 0 0-2.25-2.25H7.752l2.47 2.47a.75.75 0 0 1-1.06 1.06L3.19 5.333a.75.75 0 0 1 0-1.06l1.032-1.032v.57ZM3.75 13.5A3.75 3.75 0 0 1 7.5 9.75h1.286a.75.75 0 0 1 0 1.5H7.5a2.25 2.25 0 0 0-2.25 2.25v.186l-1.5.375V13.5ZM19.778 20.19a.75.75 0 0 1-1.06 0l-2.47-2.47H7.5a3.75 3.75 0 0 1-3.75-3.75v-.436a.75.75 0 0 1 1.5 0v.436a2.25 2.25 0 0 0 2.25 2.25h8.968l-2.47-2.47a.75.75 0 1 1 1.06-1.06l5.972 5.972a.75.75 0 0 1 0 1.06l-1.032 1.032v-.57ZM20.25 10.5a3.75 3.75 0 0 1-3.75 3.75h-1.286a.75.75 0 1 1 0-1.5H16.5a2.25 2.25 0 0 0 2.25-2.25V10.31l1.5-.375v.565Z"/></svg> },
@@ -18,76 +18,88 @@ const SkillsPage = () => {
   const skillCategories = ["All", "Programming", "Data", "Cloud", "DevOps", "Analytics"];
   const [activeCategory, setActiveCategory] = useState("All");
 
+  const sphereContainerRef = useRef(null);
   const sphereRef = useRef(null);
   const [radius, setRadius] = useState(300);
 
   // --- Physics-based animation logic ---
-  const rotationSpeed = useRef({ x: 0, y: 0 });
+  const rotation = useRef({ x: 0, y: 0 });
+  const rotationSpeed = useRef({ x: 0, y: 0.0003 }); // Start with a slow idle rotation
   const lastMousePos = useRef({ x: 0, y: 0 });
   const isDragging = useRef(false);
-  const isHovering = useRef(false);
 
   useEffect(() => {
     const updateRadius = () => setRadius(window.innerWidth < 768 ? 150 : 250);
     updateRadius();
     window.addEventListener('resize', updateRadius);
 
-    const sphere = sphereRef.current;
+    const container = sphereContainerRef.current;
+    if (!container) return;
 
     const handleMouseDown = (e) => {
       isDragging.current = true;
       lastMousePos.current = { x: e.clientX, y: e.clientY };
+      container.style.cursor = 'grabbing';
     };
-    const handleMouseUp = () => isDragging.current = false;
-    const handleMouseLeave = () => isDragging.current = false;
-
+    const handleMouseUp = () => {
+      isDragging.current = false;
+      container.style.cursor = 'grab';
+    };
+    const handleMouseLeave = () => {
+      isDragging.current = false;
+      container.style.cursor = 'grab';
+    };
     const handleMouseMove = (e) => {
       if (!isDragging.current) return;
       const deltaX = e.clientX - lastMousePos.current.x;
       const deltaY = e.clientY - lastMousePos.current.y;
-      rotationSpeed.current.y += deltaX * 0.0002;
-      rotationSpeed.current.x -= deltaY * 0.0002;
+      rotationSpeed.current.y = deltaX * 0.0005;
+      rotationSpeed.current.x = -deltaY * 0.0005;
       lastMousePos.current = { x: e.clientX, y: e.clientY };
     };
     
-    sphere.addEventListener('mousedown', handleMouseDown);
+    container.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
-    sphere.addEventListener('mouseleave', handleMouseLeave);
+    container.addEventListener('mouseleave', handleMouseLeave);
     window.addEventListener('mousemove', handleMouseMove);
 
     let animationFrameId;
     const animate = () => {
-      if (sphere) {
-        if (!isDragging.current && !isHovering.current) {
-            rotationSpeed.current.y *= 0.98; // Damping
-            rotationSpeed.current.x *= 0.98;
-             if (Math.abs(rotationSpeed.current.y) < 0.0001 && Math.abs(rotationSpeed.current.x) < 0.0001) {
-               // Add a slow, constant rotation when idle
-               rotationSpeed.current.y = 0.0002;
-             }
-        }
-        
-        const currentRotation = sphere.style.transform.match(/rotateX\(([^d]+)deg\) rotateY\(([^d]+)deg\)/);
-        const currentX = currentRotation ? parseFloat(currentRotation[1]) : 0;
-        const currentY = currentRotation ? parseFloat(currentRotation[2]) : 0;
+      rotation.current.x += rotationSpeed.current.x;
+      rotation.current.y += rotationSpeed.current.y;
 
-        sphere.style.transform = `rotateX(${currentX + rotationSpeed.current.x * 100}deg) rotateY(${currentY + rotationSpeed.current.y * 100}deg)`;
+      if (!isDragging.current) {
+        rotationSpeed.current.x *= 0.98; // Damping effect
+        rotationSpeed.current.y *= 0.98;
       }
+      
+      // Keep rotation values within a reasonable range to prevent floating point errors
+      rotation.current.x %= 360;
+      rotation.current.y %= 360;
+
+      if (sphereRef.current) {
+        sphereRef.current.style.transform = `rotateX(${rotation.current.x}deg) rotateY(${rotation.current.y}deg)`;
+      }
+
+      // This is the billboarding logic for the icons
+      document.querySelectorAll('.skill-icon-inner').forEach(icon => {
+        icon.style.transform = `rotateY(${-rotation.current.y}deg) rotateX(${-rotation.current.x}deg)`;
+      });
+
       animationFrameId = requestAnimationFrame(animate);
     };
     animate();
 
     return () => {
       window.removeEventListener('resize', updateRadius);
-      sphere.removeEventListener('mousedown', handleMouseDown);
+      container.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
-      sphere.removeEventListener('mouseleave', handleMouseLeave);
+      container.removeEventListener('mouseleave', handleMouseLeave);
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
-  // --- Helper to calculate position on sphere ---
   const getPositionOnSphere = (index, total, radius) => {
     const phi = Math.acos(-1 + (2 * index) / total);
     const theta = Math.sqrt(total * Math.PI) * phi;
@@ -110,50 +122,37 @@ const SkillsPage = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Left Side: Text and Filters */}
-            <div className="md:order-1">
+            <div>
               <h2 className="text-3xl font-semibold text-primary mb-4">Core Competencies</h2>
               <p className="text-muted-foreground mb-6 text-lg">
                 I specialize in transforming data into actionable insights by designing and implementing scalable data pipelines, robust cloud infrastructure, and intuitive analytics platforms.
               </p>
-              
               <div className="mb-8">
-                  <h3 className="text-xl font-semibold mb-4 text-foreground">Filter by Category:</h3>
-                  <div className="flex flex-wrap gap-2">
-                      {skillCategories.map(cat => (
-                          <button 
-                              key={cat}
-                              onClick={() => setActiveCategory(cat)}
-                              className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ${activeCategory === cat ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-secondary hover:bg-primary/20'}`}
-                          >
-                              {cat}
-                          </button>
-                      ))}
-                  </div>
+                <h3 className="text-xl font-semibold mb-4 text-foreground">Filter by Category:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {skillCategories.map(cat => (
+                    <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ${activeCategory === cat ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-secondary hover:bg-primary/20'}`}>
+                      {cat}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Right Side: Interactive Skill Nexus */}
-            <div 
-              className="relative flex items-center justify-center h-[400px] md:h-[500px] w-full skill-nexus-bg rounded-lg"
-              onMouseEnter={() => isHovering.current = true}
-              onMouseLeave={() => isHovering.current = false}
-            >
-              <div ref={sphereRef} style={{ transformStyle: "preserve-3d" }}>
+            <div ref={sphereContainerRef} className="skill-nexus-container">
+              <div ref={sphereRef} className="skill-sphere">
                 {allSkills.map((skill, index) => {
                   const { x, y, z } = getPositionOnSphere(index, allSkills.length, radius);
                   const isActive = activeCategory === 'All' || activeCategory === skill.category;
                   return (
-                    <div
-                      key={index}
-                      className={`skill-icon absolute flex flex-col items-center justify-center p-3 rounded-lg bg-secondary/80 backdrop-blur-sm shadow-lg border border-primary/20 transition-all duration-500 ${isActive ? 'opacity-100 scale-100' : 'opacity-20 scale-75'}`}
-                      style={{ transform: `translate3d(${x}px, ${y}px, ${z}px) rotateY(${-Math.atan2(z, x)}rad) rotateX(${Math.asin(y / radius)}rad)` }}
-                    >
-                      {skill.icon}
-                      <span className="text-xs mt-2 font-semibold text-foreground hidden md:block">
-                        {skill.name}
-                      </span>
+                    <div className="skill-node" style={{ transform: `translate3d(${x}px, ${y}px, ${z}px)` }}>
+                      <div className={`skill-icon-inner ${isActive ? 'active' : ''}`}>
+                        {skill.icon}
+                        <span className="skill-name">{skill.name}</span>
+                      </div>
                     </div>
                   );
                 })}
@@ -165,18 +164,61 @@ const SkillsPage = () => {
       
       {/* Add this CSS to your global stylesheet (e.g., index.css or App.css) */}
       <style jsx global>{`
-        .skill-nexus-bg {
-            background-image: radial-gradient(circle at center, rgba(120, 113, 108, 0.1) 1px, transparent 1px);
-            background-size: 2rem 2rem;
-            border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+        .skill-nexus-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 500px;
+            width: 100%;
+            cursor: grab;
+            perspective: 1200px; /* KEY FIX: Creates a true 3D space */
         }
-        .skill-icon {
-            cursor: pointer;
+        .skill-sphere {
+            position: relative;
+            width: 1px;
+            height: 1px;
+            transform-style: preserve-3d;
         }
-        .skill-icon:hover {
-            transform: scale(1.2) !important; /* Overwrite the 3D transform for scaling */
+        .skill-node {
+            position: absolute;
+            transform-style: preserve-3d;
+        }
+        .skill-icon-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: rgba(30, 41, 59, 0.7); /* Example: bg-slate-800/70 */
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(56, 189, 248, 0.2); /* Example: border-sky-400/20 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .skill-icon-inner.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .skill-icon-inner:not(.active) {
+            opacity: 0.15;
+            transform: scale(0.8);
+        }
+        .skill-icon-inner:hover {
+            transform: scale(1.2) !important;
+            box-shadow: 0 0 20px #0ea5e9; /* Example: shadow-sky-400 */
             z-index: 10;
-            box-shadow: 0 0 15px var(--primary-color, #0ea5e9);
+        }
+        .skill-name {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: none; /* Hidden by default for a cleaner mobile view */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .skill-name {
+                display: block;
+            }
         }
       `}</style>
     </main>
