@@ -13,7 +13,7 @@ const Projects = () => {
       title: "Real-Time Ride-Hailing Data Pipeline", 
       description: "Kafka + Spark streaming pipeline for live trip analytics, providing real-time insights and monitoring.",
       techStack: ["Apache Kafka", "Apache Spark", "PostgreSQL", "Superset", "Streaming"],
-      github: "https://github.com/moaskary",
+      github: "https://github.com/moaskary/Real_Time_Ride_Hailing_Data_Pipeline",
       category: "Real-Time Analytics"
     },
     {
