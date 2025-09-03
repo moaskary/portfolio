@@ -24,7 +24,7 @@ const Home = () => {
           {/* Main Hero Content */}
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-              <span className="text-foreground">MOHAMMAD ABU ABBAS</span>
+              <span className="text-foreground">MOHAMAD ABU ABBAS</span>
             </h1>
             
             <h2 className="text-2xl md:text-4xl font-semibold mb-8 glow-text">
